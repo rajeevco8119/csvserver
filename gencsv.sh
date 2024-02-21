@@ -11,7 +11,7 @@ start_index=$1
 num_entries=$2
 
 # Specify the output file name
-output_file="inputFile.csv"
+output_file="inputFile"
 
 # Generate content and write to the output file
 for ((i = start_index; i < start_index + num_entries; i++)); do
