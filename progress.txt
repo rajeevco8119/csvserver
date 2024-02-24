@@ -1,0 +1,50 @@
+I am into the task but still facing some issue.Using the below commands:
+
+git clone https://rajeevco8119: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@github.com/rajeevco8119/csvserver.git
+git push -u origin master
+
+docker pull infracloudio/csvserver:latest
+docker run -d -p 9300:9300 --name csvserver infracloudio/csvserver:latest
+docker logs csvserver
+<Got the error response below>Error while reading the file "/csvserver/inputdata":open /csvserver/inputdata: no such file or directory
+
+<created the file gencsv.sh and pushed in github>
+#!/bin/bash
+
+# Check if two arguments are provided
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <start_index> <num_entries>"
+    exit 1
+fi
+
+# Extract arguments
+start_index=$1
+num_entries=$2
+
+# Specify the output file name
+output_file="inputFile.csv"
+
+# Generate content and write to the output file
+for ((i = start_index; i < start_index + num_entries; i++)); do
+    echo "$i, $((RANDOM % 100))" >> "$output_file"
+done
+
+echo "File '$output_file' generated successfully."
+
+<Here I am trying to create container using the image and mapping volume of server with volume of container but files aren't getting copied><There is one ./csvserver binary which is present in /csvserver directory which runs in case I manually create inputdata file at the location, I checked by bashing inside the container>
+
+<Tried with all commands below but still the file is not copying, although files are getting copied to /tmp directory , from there the files aren't copied (Used docker cp commands)>
+docker run -v /root/csvserver:/tmp -it --entrypoint /bin/bash --name csvserver infracloudio/csvserver:latest
+docker exec -it csvserver /bin/bash cp /tmp/* /csvserver
+docker exec -it csvserver /bin/bash ./csvserver 
+
+(docker ps -a gives port 9300)
+
+docker run -d -it -v /root/csvserver:/csvserver infracloudio/csvserver
+
+docker run -it --entrypoint /bin/bash infracloudio/csvserver
+docker run -e CSVSERVER_BORDER=Orange infracloudio/csvserver:latest
+
+
+docker exec -it csvserver \
+  sh -c 'mkdir -p /csvserver && mount --bind /root/csvserver /csvserver'
