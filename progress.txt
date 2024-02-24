@@ -6,9 +6,12 @@ git push -u origin master
 docker pull infracloudio/csvserver:latest
 docker run -d -p 9300:9300 --name csvserver infracloudio/csvserver:latest
 docker logs csvserver
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 <Got the error response below>Error while reading the file "/csvserver/inputdata":open /csvserver/inputdata: no such file or directory
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 <created the file gencsv.sh and pushed in github>
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #!/bin/bash
 
 # Check if two arguments are provided
@@ -30,10 +33,13 @@ for ((i = start_index; i < start_index + num_entries; i++)); do
 done
 
 echo "File '$output_file' generated successfully."
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 <Here I am trying to create container using the image and mapping volume of server with volume of container but files aren't getting copied><There is one ./csvserver binary which is present in /csvserver directory which runs in case I manually create inputdata file at the location, I checked by bashing inside the container>
-
-<Tried with all commands below but still the file is not copying, although files are getting copied to /tmp directory , from there the files aren't copied (Used docker cp commands)>
+<Tried with all commands below but still the file is not copying, although files are getting copied to /tmp directory , from there the files aren't copied (Used docker cp commands)
+The mapping to file inputData to be copied inside csvserver has been an issue despite using docker cp, docker run cmds.>
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 docker run -v /root/csvserver:/tmp -it --entrypoint /bin/bash --name csvserver infracloudio/csvserver:latest
 docker exec -it csvserver /bin/bash cp /tmp/* /csvserver
 docker exec -it csvserver /bin/bash ./csvserver 
